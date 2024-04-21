@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Miles Allowed Chart</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="stylesheet" type="text/css" href="styles.css">
+</head>
+<body>
+    <div class="actual-miles">
+        <input type="number" id="actualMilesInput" placeholder="Enter actual miles used">
+        <button onclick="updateCharts()">Submit</button>
+    </div>
+    <div class="container">
+        <canvas id="mileageChart"></canvas>
+        <canvas id="barChart"></canvas>
+        <canvas id="pieChart"></canvas>
+        <canvas id="doughnutChart"></canvas> <!-- New canvas for the doughnut chart -->
+    </div>
+    <script src="graphs.js"></script>
+</body>
+</html>
