@@ -50,3 +50,29 @@ canvas {
     margin-bottom: 20px;
     box-sizing: border-box; /* Ensure padding and border are included in the width calculation */
 }
+
+.difference-container {
+    max-width: 1500px;
+    margin: 20px auto;
+    padding: 20px;
+    background-color: #333;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+    text-align: center;
+}
+
+.difference {
+    font-family: Arial, sans-serif;
+    font-size: 20px;
+    padding: 10px;
+    border-radius: 5px;
+}
+
+.over {
+    color: #FF5F5F; /* Red color for over */
+}
+
+.under {
+    color: #5FFF5F; /* Green color for under */
+}
+

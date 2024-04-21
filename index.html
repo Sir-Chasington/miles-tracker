@@ -10,13 +10,16 @@
 <body>
     <div class="actual-miles">
         <input type="number" id="actualMilesInput" placeholder="Enter actual miles used">
-        <button onclick="updateCharts()">Submit</button>
+        <button id="submitBtn">Submit</button>
     </div>
     <div class="container">
         <canvas id="mileageChart"></canvas>
         <canvas id="barChart"></canvas>
         <canvas id="pieChart"></canvas>
         <canvas id="doughnutChart"></canvas> <!-- New canvas for the doughnut chart -->
+    </div>
+    <div class="difference-container">
+        <div class="difference"></div>
     </div>
     <script src="graphs.js"></script>
 </body>

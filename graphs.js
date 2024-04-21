@@ -151,47 +151,85 @@ if (storedActualMilesUsed !== null) {
     actualMilesUsed = parseInt(storedActualMilesUsed);
 
     // Update the charts with the stored value
-    updateCharts();
+    updateCharts(actualMilesUsed);
 }
 
 // Function to update the charts
-function updateCharts() {
-    // Get the actual miles input element
-    const actualMilesInput = document.getElementById('actualMilesInput');
-
-    // Check if there's a value in localStorage for actual miles used
-    const storedActualMilesUsed = localStorage.getItem('actualMilesUsed');
-
-    // If there's a value in localStorage, use that as the new actual miles used
-    if (storedActualMilesUsed !== null) {
-        // Set the value of the actual miles input to the value from localStorage
-        actualMilesInput.value = storedActualMilesUsed;
-
-        // Parse the stored value as an integer
-        actualMilesUsed = parseInt(storedActualMilesUsed);
-    } else {
-        // If no value is stored in localStorage, use the value from the input field
-        actualMilesUsed = parseInt(actualMilesInput.value);
-
-        // Update localStorage with the new value of actual miles used
-        localStorage.setItem('actualMilesUsed', actualMilesUsed);
-    }
-
+function updateCharts(newActualMilesUsed) {
     // Update the actual miles used in the datasets
-    actualMiles[daysLapsed] = actualMilesUsed;
-    barChart.data.datasets[1].data[1] = actualMilesUsed;
-    pieChart.data.datasets[0].data[1] = actualMilesUsed;
-    doughnutChart.data.datasets[0].data[1] = actualMilesUsed;
+    actualMiles[daysLapsed] = newActualMilesUsed;
+    barChart.data.datasets[1].data[1] = newActualMilesUsed;
+    pieChart.data.datasets[0].data[1] = newActualMilesUsed;
+    doughnutChart.data.datasets[0].data[1] = newActualMilesUsed;
 
     // Update the mileage chart with a single data point for actual miles
-    mileageChart.data.datasets[1].data = [{ x: daysLapsed, y: actualMilesUsed }];
+    mileageChart.data.datasets[1].data = [{ x: daysLapsed, y: newActualMilesUsed }];
 
     // Update all charts
     mileageChart.update();
     barChart.update();
     pieChart.update();
     doughnutChart.update();
+
+    // Update difference after updating charts
+    updateDifference(newActualMilesUsed);
 }
 
 
+// Add event listener to the input field
+document.getElementById('actualMilesInput').addEventListener('keydown', function(event) {
+    // Check if the enter key (key code 13) is pressed
+    if (event.keyCode === 13) {
+        // Prevent the default behavior of the enter key (form submission)
+        event.preventDefault();
 
+        // Get the actual miles input field value
+        const actualMilesInput = document.getElementById('actualMilesInput').value;
+        
+        // Parse the input value as an integer
+        const newActualMilesUsed = parseInt(actualMilesInput);
+
+        // Update localStorage with the new value of actual miles used
+        localStorage.setItem('actualMilesUsed', newActualMilesUsed);
+
+        // Update the charts with the new value
+        updateCharts(newActualMilesUsed);
+    }
+});
+
+// Add event listener to the submit button
+document.getElementById('submitBtn').addEventListener('click', function() {
+    // Get the actual miles input field value
+    const actualMilesInput = document.getElementById('actualMilesInput').value;
+    
+    // Parse the input value as an integer
+    const newActualMilesUsed = parseInt(actualMilesInput);
+
+    // Update localStorage with the new value of actual miles used
+    localStorage.setItem('actualMilesUsed', newActualMilesUsed);
+
+    // Update the charts with the new value
+    updateCharts(newActualMilesUsed);
+});
+
+function updateDifference(newActualMilesUsed) {
+    // Calculate the difference between miles allowed and miles used
+    const difference = allowedMiles[daysLapsed] - newActualMilesUsed;
+
+    // Get the difference element
+    const differenceElement = document.querySelector('.difference');
+
+    // Set the text content of the difference element
+    if (difference > 0) {
+        differenceElement.textContent = `Under ${difference.toFixed(2)} miles`;
+        differenceElement.classList.remove('over');
+        differenceElement.classList.add('under');
+    } else if (difference < 0) {
+        differenceElement.textContent = `Over ${Math.abs(difference).toFixed(2)} miles`;
+        differenceElement.classList.remove('under');
+        differenceElement.classList.add('over');
+    } else {
+        differenceElement.textContent = "Miles used are equal to miles allowed";
+        differenceElement.classList.remove('under', 'over');
+    }
+}
