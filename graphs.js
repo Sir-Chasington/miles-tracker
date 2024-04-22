@@ -23,6 +23,29 @@ for (let i = 0; i <= daysLapsed; i++) {
     days.push(i);
 }
 
+const currentMonth = currentDate.getMonth();
+const nextMonth = (currentMonth + 1) % 12; // Get the index of the next month
+const year = currentDate.getFullYear();
+
+// Calculate the start and end dates for the current month cycle
+const startOfMonth = new Date(year, currentMonth, 15);
+const endOfMonth = new Date(year, nextMonth, 14);
+
+// Calculate the month where the 15th starts
+const monthWhere15thStarts = startOfMonth.toLocaleString('default', { month: 'long' });
+
+// Calculate the number of days in the current month cycle
+const daysInMonthCycle = Math.ceil((endOfMonth.getTime() - startOfMonth.getTime()) / (1000 * 3600 * 24)) + 1;
+
+// Calculate allowed miles in the current month
+const allowedMilesInMonth = (milesPerDay * daysInMonthCycle).toFixed(0);
+
+// Calculate the number of days since the 15th of the month
+const daysSinceStartOfMonth = currentDate.getDate() - 14;
+
+// Calculate potential current miles for the current month
+const potentialCurrentMiles = (milesPerDay * daysSinceStartOfMonth).toFixed(0);
+
 const ctx1 = document.getElementById('mileageChart').getContext('2d');
 const mileageChart = new Chart(ctx1, {
     type: 'line',
@@ -57,6 +80,9 @@ const mileageChart = new Chart(ctx1, {
                 title: {
                     display: true,
                     text: 'Miles'
+                },
+                ticks: {
+                    precision: 0 // Remove decimal points
                 }
             }
         }
@@ -88,7 +114,10 @@ const barChart = new Chart(ctx2, {
     options: {
         scales: {
             y: {
-                beginAtZero: true
+                beginAtZero: true,
+                ticks: {
+                    precision: 0 // Remove decimal points
+                }
             }
         }
     }
@@ -98,10 +127,10 @@ const ctx3 = document.getElementById('pieChart').getContext('2d');
 const pieChart = new Chart(ctx3, {
     type: 'pie',
     data: {
-        labels: ['Allowed Miles', 'Actual Miles Used'],
+        labels: [`Allowed Miles in ${monthWhere15thStarts}`, `Potential Current Miles for ${monthWhere15thStarts}`],
         datasets: [{
             label: 'Miles',
-            data: [allowedMiles[daysLapsed], 0], // Initially set actual miles used to 0
+            data: [allowedMilesInMonth, potentialCurrentMiles],
             backgroundColor: [
                 'rgba(30, 136, 229, 0.5)', // Cobalt Blue with opacity
                 'rgba(255, 193, 7, 0.5)' // Amber with opacity
@@ -116,7 +145,10 @@ const pieChart = new Chart(ctx3, {
     options: {
         scales: {
             y: {
-                beginAtZero: true
+                beginAtZero: true,
+                ticks: {
+                    precision: 0 // Remove decimal points
+                }
             }
         }
     }
@@ -126,7 +158,7 @@ const ctx4 = document.getElementById('doughnutChart').getContext('2d');
 const doughnutChart = new Chart(ctx4, {
     type: 'doughnut',
     data: {
-        labels: ['Total Miles Allowed', 'Actual Miles Used'],
+        labels: ['Total Miles Left', 'Actual Miles Used'],
         datasets: [{
             label: 'Miles',
             data: [totalMiles, 0], // Initially set actual miles used to 0
@@ -141,7 +173,16 @@ const doughnutChart = new Chart(ctx4, {
             borderWidth: 1
         }]
     },
-    options: {}
+    options: {
+        scales: {
+            y: {
+                beginAtZero: true,
+                ticks: {
+                    precision: 0 // Remove decimal points
+                }
+            }
+        }
+    }
 });
 
 // Check if there's a value stored in localStorage for actual miles used
@@ -152,6 +193,11 @@ if (storedActualMilesUsed !== null) {
 
     // Update the charts with the stored value
     updateCharts(actualMilesUsed);
+    // Update the total miles driven with the stored value
+    document.getElementById('totalMilesDriven').textContent = actualMilesUsed.toFixed(0);
+} else {
+    // If there is no value in local storage, initialize it with 0
+    localStorage.setItem('actualMilesUsed', 0);
 }
 
 // Function to update the charts
@@ -159,7 +205,9 @@ function updateCharts(newActualMilesUsed) {
     // Update the actual miles used in the datasets
     actualMiles[daysLapsed] = newActualMilesUsed;
     barChart.data.datasets[1].data[1] = newActualMilesUsed;
-    pieChart.data.datasets[0].data[1] = newActualMilesUsed;
+    // Update the pie chart data
+    pieChart.data.datasets[0].data = [allowedMilesInMonth, potentialCurrentMiles];
+    doughnutChart.data.datasets[0].data[0] = totalMiles - newActualMilesUsed; // Update total miles left in doughnut chart
     doughnutChart.data.datasets[0].data[1] = newActualMilesUsed;
 
     // Update the mileage chart with a single data point for actual miles
@@ -175,6 +223,24 @@ function updateCharts(newActualMilesUsed) {
     updateDifference(newActualMilesUsed);
 }
 
+function setValues() {
+    console.log('are we here on load?')
+    // Get the actual miles input field value
+    const actualMilesInput = document.getElementById('actualMilesInput').value;
+            
+    // Parse the input value as an integer
+    const newActualMilesUsed = parseInt(actualMilesInput);
+
+    // Update localStorage with the new value of actual miles used
+    localStorage.setItem('actualMilesUsed', newActualMilesUsed);
+
+    // Update the chart with the new value
+    updateCharts(newActualMilesUsed);
+
+    // Update the total miles driven with the new value
+    document.getElementById('totalMilesDriven').textContent = newActualMilesUsed.toFixed(0); // No decimal places
+}
+
 
 // Add event listener to the input field
 document.getElementById('actualMilesInput').addEventListener('keydown', function(event) {
@@ -183,33 +249,15 @@ document.getElementById('actualMilesInput').addEventListener('keydown', function
         // Prevent the default behavior of the enter key (form submission)
         event.preventDefault();
 
-        // Get the actual miles input field value
-        const actualMilesInput = document.getElementById('actualMilesInput').value;
-        
-        // Parse the input value as an integer
-        const newActualMilesUsed = parseInt(actualMilesInput);
-
-        // Update localStorage with the new value of actual miles used
-        localStorage.setItem('actualMilesUsed', newActualMilesUsed);
-
-        // Update the charts with the new value
-        updateCharts(newActualMilesUsed);
+        // Call the setValues function to update the charts and the total miles driven
+        setValues();
     }
 });
 
 // Add event listener to the submit button
 document.getElementById('submitBtn').addEventListener('click', function() {
-    // Get the actual miles input field value
-    const actualMilesInput = document.getElementById('actualMilesInput').value;
-    
-    // Parse the input value as an integer
-    const newActualMilesUsed = parseInt(actualMilesInput);
-
-    // Update localStorage with the new value of actual miles used
-    localStorage.setItem('actualMilesUsed', newActualMilesUsed);
-
-    // Update the charts with the new value
-    updateCharts(newActualMilesUsed);
+    // Call the setValues function to update the charts and the total miles driven
+    setValues();
 });
 
 function updateDifference(newActualMilesUsed) {
@@ -221,11 +269,11 @@ function updateDifference(newActualMilesUsed) {
 
     // Set the text content of the difference element
     if (difference > 0) {
-        differenceElement.textContent = `Under ${difference.toFixed(2)} miles`;
+        differenceElement.textContent = `Under By ${difference.toFixed(0)} miles`;
         differenceElement.classList.remove('over');
         differenceElement.classList.add('under');
     } else if (difference < 0) {
-        differenceElement.textContent = `Over ${Math.abs(difference).toFixed(2)} miles`;
+        differenceElement.textContent = `Over By ${Math.abs(difference).toFixed(0)} miles`;
         differenceElement.classList.remove('under');
         differenceElement.classList.add('over');
     } else {
@@ -233,3 +281,16 @@ function updateDifference(newActualMilesUsed) {
         differenceElement.classList.remove('under', 'over');
     }
 }
+
+
+// Calculate the number of days since the purchase
+const daysSincePurchase = Math.floor((currentDate - purchaseDate) / (1000 * 60 * 60 * 24));
+
+// Update the HTML element with the number of days since the purchase
+document.getElementById('daysSincePurchase').textContent = daysSincePurchase;
+
+// Update the HTML element with the number of miles allowed in current month
+document.getElementById('monthMiles').textContent = allowedMilesInMonth;
+
+// Update the HTML element with the number of miles allowed so far in current month
+document.getElementById('allowedSoFar').textContent = potentialCurrentMiles;

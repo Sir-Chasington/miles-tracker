@@ -6,6 +6,42 @@ body {
     padding: 0;
 }
 
+header {
+    background-color: #1E88E5; /* Cobalt Blue */
+    color: #fff; /* White text */
+    padding: 10px 0; /* Add some padding for better spacing */
+    margin-bottom: 20px; /* Add margin bottom */
+}
+
+nav {
+    text-align: center; /* Center-align the navigation links */
+}
+
+nav ul {
+    list-style-type: none; /* Remove bullet points from list */
+    padding: 0;
+}
+
+nav ul li {
+    display: inline; /* Display list items horizontally */
+    margin-right: 20px; /* Add some space between list items */
+}
+
+nav ul li:last-child {
+    margin-right: 0; /* Remove margin from last list item */
+}
+
+nav ul li a {
+    color: #fff; /* White text for links */
+    text-decoration: none; /* Remove underline from links */
+    font-size: 18px; /* Adjust font size as needed */
+}
+
+nav ul li a:hover {
+    text-decoration: underline; /* Add underline on hover */
+}
+
+
 .container {
     max-width: 1500px;
     margin: 20px auto;
@@ -23,10 +59,20 @@ body {
     margin-bottom: 20px;
 }
 
-input[type="number"],
-button {
+input[type="number"] {
+    width: 175px; /* Adjust the width as needed */
     background-color: #444;
     color: #ddd;
+    border: none;
+    padding: 10px;
+    margin: 5px;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+button {
+    background-color: rgba(255, 193, 7, 1);
+    color: rgba(30, 136, 229, 1);
     border: none;
     padding: 10px;
     margin: 5px;
@@ -39,7 +85,8 @@ input[type="number"]::placeholder {
 }
 
 button:hover {
-    background-color: #555;
+    background-color: rgba(30, 136, 229, 0.5);
+    color: rgba(255, 193, 7, 1);
 }
 
 canvas {
@@ -75,4 +122,32 @@ canvas {
 .under {
     color: #5FFF5F; /* Green color for under */
 }
+
+.dashboard {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-around;
+    max-width: 1500px;
+    margin: 20px auto;
+    padding: 20px;
+    background-color: #333;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+}
+
+.dashboard-item {
+    flex: 0 0 calc(33.33% - 20px); /* 33.33% width with spacing between */
+    margin-bottom: 20px;
+}
+
+.dashboard-item-content {
+    padding: 10px;
+    background-color: rgba(30, 136, 229, 0.5);
+    border-radius: 5px;
+    border: 1px solid #666;
+    text-align: center;
+    color: #ddd;
+    font-size: 16px;
+}
+
 

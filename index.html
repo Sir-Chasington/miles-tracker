@@ -8,9 +8,40 @@
     <link rel="stylesheet" type="text/css" href="styles.css">
 </head>
 <body>
+    <header>
+        <nav>
+            <ul>
+                <li><a href="index.html">Home</a></li>
+                <li><a href="other-page.html">Other Page</a></li>
+                <!-- Add more navigation links for future pages -->
+            </ul>
+        </nav>
+    </header>
     <div class="actual-miles">
         <input type="number" id="actualMilesInput" placeholder="Enter actual miles used">
         <button id="submitBtn">Submit</button>
+    </div>
+    <div class="dashboard">
+        <div class="dashboard-item">
+            <div class="dashboard-item-content">
+                <span>Days Since Purchase: <span id="daysSincePurchase">0</span></span>
+            </div>
+        </div>
+        <div class="dashboard-item">
+            <div class="dashboard-item-content">
+                <span>Total Miles Driven: <span id="totalMilesDriven">0</span></span>
+            </div>
+        </div>
+        <div class="dashboard-item">
+            <div class="dashboard-item-content">
+                <span>Miles Allowed For Month : <span id="monthMiles">0</span></span>
+            </div>
+        </div>
+        <div class="dashboard-item">
+            <div class="dashboard-item-content">
+                <span>Allowed Miles So Far this Month: <span id="allowedSoFar">0</span></span>
+            </div>
+        </div>
     </div>
     <div class="container">
         <canvas id="mileageChart"></canvas>
