@@ -13,13 +13,13 @@ const oneDay = 24 * 60 * 60 * 1000; // hours*minutes*seconds*milliseconds
 const today = new Date().setHours(0,0,0,0);
 const endOfSeason = new Date(endDateYear, endDateMonth, endDateDay).valueOf()
 
-const daysLapsed = ((today - startDate) / 1000 / 60 / 60 / 24) + 1
-const daysInSeason = Math.round(Math.abs((startDate - endOfSeason) / oneDay))
-const levelsADay = levelsToReach / daysInSeason
-const levelsADay200 = maxLevelToReach / daysInSeason
+const daysLapsed = Math.ceil((today - startDate) / oneDay); // Calculate days lapsed
+const daysInSeason = Math.round((endOfSeason - startDate) / oneDay); // Calculate days in season
+const levelsADay = levelsToReach / daysInSeason;
+const levelsADay200 = maxLevelToReach / daysInSeason;
 
-const levelNeeded = daysLapsed * levelsADay
-const levelNeeded200 = daysLapsed * levelsADay200
+const levelNeeded = daysLapsed * levelsADay;
+const levelNeeded200 = daysLapsed * levelsADay200;
 
 const daysLeft = Math.round(Math.abs((today - endOfSeason) / oneDay));
 const level100Message = `You need to be at level ${levelNeeded.toFixed(1)} to get to 100 before season end`;
@@ -36,26 +36,46 @@ document.getElementById('levelsADay200').innerHTML = `${levelsADay200.toFixed(2)
 document.getElementById('seasonStart').innerHTML = `Season Start: ${startFormatted}`;
 document.getElementById('seasonEnd').innerHTML = `Season End: ${endFormatted}`;
 
+// Define an array containing all the days in the season
+const allDays = Array.from({ length: daysInSeason }, (_, i) => i + 1);
+
+const levelsData100 = Array.from({ length: daysInSeason }, (_, i) => {
+    return (levelsADay * (i + 1)).toFixed(1);
+});
+
+const levelsData200 = Array.from({ length: daysInSeason }, (_, i) => {
+    return (levelsADay200 * (i + 1)).toFixed(1);
+});
+
 // Create levels chart
 const levelsCtx = document.getElementById('levelsChart').getContext('2d');
 const levelsChart = new Chart(levelsCtx, {
     type: 'line',
     data: {
-        labels: ['Start', 'Today', 'End'],
+        labels: allDays, // Use allDays array as labels
         datasets: [
             {
-                label: 'Current Level Needed For 100',
-                data: [0, levelNeeded, levelsToReach],
+                label: 'Levels to 100',
+                data: levelsData100,
                 borderColor: '#f44336', // Red
                 backgroundColor: 'rgba(244, 67, 54, 0.2)', // Red with opacity
                 tension: 0.1
             },
             {
-                label: 'Current Level Needed For 200',
-                data: [0, levelNeeded200, maxLevelToReach],
+                label: 'Levels to 200',
+                data: levelsData200,
                 borderColor: '#2196f3', // Blue
                 backgroundColor: 'rgba(33, 150, 243, 0.2)', // Blue with opacity
                 tension: 0.1
+            },
+            {
+                label: 'Current Day',
+                data: [{ x: daysLapsed, y: levelNeeded.toFixed(1) }, { x: daysLapsed, y: levelNeeded200.toFixed(1) }],
+                backgroundColor: 'rgba(255, 99, 132, 0.2)', // Red with opacity
+                borderColor: 'rgba(255, 99, 132, 1)', // Red
+                borderWidth: 1,
+                pointRadius: 8,
+                pointHoverRadius: 10
             }
         ]
     },
