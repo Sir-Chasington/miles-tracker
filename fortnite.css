@@ -1,0 +1,89 @@
+body {
+    background-color: #0f0f0f; /* Dark Gray */
+    color: #ffffff; /* White */
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+}
+
+header {
+    background-color: #4caf50;
+    color: #ffffff; /* White */
+    padding: 10px 0; /* Add some padding for better spacing */
+}
+
+nav {
+    text-align: center; /* Center-align the navigation links */
+}
+
+nav ul {
+    list-style-type: none; /* Remove bullet points from list */
+    padding: 0;
+}
+
+nav ul li {
+    display: inline; /* Display list items horizontally */
+    margin-right: 20px; /* Add some space between list items */
+}
+
+nav ul li:last-child {
+    margin-right: 0; /* Remove margin from last list item */
+}
+
+nav ul li a {
+    color: #ffffff; /* White text for links */
+    text-decoration: none; /* Remove underline from links */
+    font-size: 18px; /* Adjust font size as needed */
+}
+
+nav ul li a:hover {
+    text-decoration: underline; /* Add underline on hover */
+}
+
+.container {
+    max-width: 1500px;
+    margin: 20px auto;
+    padding: 20px;
+    background-color: #333;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between; /* Distribute items evenly */
+}
+
+.container canvas {
+    width: calc(50% - 10px); /* 50% width with spacing between */
+    max-width: 700px;
+    height: 250px; /* Set your desired height */
+    max-height: 700px; /* Set the maximum height */
+    margin-bottom: 20px;
+    box-sizing: border-box; /* Ensure padding and border are included in the width calculation */
+}
+
+.dashboard {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-around;
+    max-width: 1500px;
+    margin: 20px auto;
+    padding: 20px;
+    background-color: #333333; /* Dark Gray */
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+}
+
+.dashboard-item {
+    flex: 0 0 calc(33.33% - 20px); /* 33.33% width with spacing between */
+    margin-bottom: 20px;
+}
+
+.dashboard-item-content {
+    padding: 10px;
+    background-color: rgba(76, 175, 80, 0.5);
+    border-radius: 5px;
+    border: 1px solid #ffffff; /* White */
+    text-align: center;
+    color: #ffffff; /* White */
+    font-size: 16px;
+}
