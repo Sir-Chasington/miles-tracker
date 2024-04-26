@@ -295,4 +295,4 @@ document.getElementById('monthMiles').textContent = allowedMilesInMonth;
 // Update the HTML element with the number of miles allowed so far in current month
 document.getElementById('allowedSoFar').textContent = potentialCurrentMiles;
 
-document.getElementById('purchaseDate').textContent = `Date of purchase: ${purchaseDate}`;
+document.getElementById('purchaseDate').innerHTML = `Date of purchase: ${purchaseDate}`;
