@@ -26,7 +26,7 @@ const level100Message = `You need to be at level ${levelNeeded.toFixed(1)} to ge
 const level200Message = `You need to be at level ${levelNeeded200.toFixed(1)} to get to 200 before season end`;
 
 const startFormatted = `${startDateMonth}/${startDateDay}/${startDateYear}`;
-const endFormatted = `${endDateMonth}/${endDateDay}/${endDateYear}`;
+const endFormatted = `${endDateMonth+1}/${endDateDay}/${endDateYear}`;
 
 // Update dashboard
 document.getElementById('levelsTo100').innerHTML = level100Message;
