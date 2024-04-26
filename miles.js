@@ -296,3 +296,4 @@ document.getElementById('monthMiles').textContent = allowedMilesInMonth;
 document.getElementById('allowedSoFar').textContent = potentialCurrentMiles;
 
 document.getElementById('purchaseDate').textContent = `Date of purchase: ${purchaseDate}`;
+document.getElementById('purchaseDate').textContent = `Date of Purchase: ${purchaseDate.toLocaleDateString('en-US', {day: 'numeric',month: 'long',year: 'numeric'})}`
