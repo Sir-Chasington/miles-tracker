@@ -2,7 +2,7 @@ const milesPerYear = 10000;
 const daysInYear = 365;
 const leaseYears = 3;
 const totalMiles = milesPerYear * leaseYears;
-const milesPerDay = totalMiles / (daysInYear * leaseYears);
+const milesPerDay = Number(totalMiles / (daysInYear * leaseYears)).toFixed(0);
 
 const purchaseDate = new Date(2024, 2, 15);
 const currentDate = new Date();
@@ -263,17 +263,20 @@ document.getElementById('submitBtn').addEventListener('click', function() {
 function updateDifference(newActualMilesUsed) {
     // Calculate the difference between miles allowed and miles used
     const difference = allowedMiles[daysLapsed] - newActualMilesUsed;
+    
+    // Calculate the percentage difference
+    const percentageDifference = ((allowedMiles[daysLapsed] - newActualMilesUsed) / ((allowedMiles[daysLapsed] + newActualMilesUsed) / 2)) * 100;
 
     // Get the difference element
     const differenceElement = document.querySelector('.difference');
 
     // Set the text content of the difference element
     if (difference > 0) {
-        differenceElement.textContent = `Under By ${difference.toFixed(0)} miles`;
+        differenceElement.textContent = `Under By ${difference.toFixed(0)} miles (${percentageDifference.toFixed(2)}%)`;
         differenceElement.classList.remove('over');
         differenceElement.classList.add('under');
     } else if (difference < 0) {
-        differenceElement.textContent = `Over By ${Math.abs(difference).toFixed(0)} miles`;
+        differenceElement.textContent = `Over By ${Math.abs(difference).toFixed(0)} miles (${percentageDifference.toFixed(2)}%)`;
         differenceElement.classList.remove('under');
         differenceElement.classList.add('over');
     } else {
@@ -281,6 +284,7 @@ function updateDifference(newActualMilesUsed) {
         differenceElement.classList.remove('under', 'over');
     }
 }
+
 
 
 // Calculate the number of days since the purchase
@@ -296,3 +300,12 @@ document.getElementById('monthMiles').textContent = allowedMilesInMonth;
 document.getElementById('allowedSoFar').textContent = potentialCurrentMiles;
 
 document.getElementById('purchaseDate').textContent = purchaseDate.toLocaleDateString('en-US', {day: 'numeric',month: 'long',year: 'numeric'});
+
+// Calculate the total allowed miles since the date of purchase
+const totalAllowedSoFar = Math.floor(milesPerDay * daysSincePurchase);
+
+// Update the HTML element with the total allowed miles since purchase
+document.getElementById('totalAllowedSoFar').textContent = totalAllowedSoFar.toFixed(0);
+
+// Update teh HTML element with the miles allowed per day
+document.getElementById('allowedPerDay').textContent = milesPerDay;
