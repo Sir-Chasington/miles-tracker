@@ -286,12 +286,15 @@ function updateDifference(newActualMilesUsed) {
 }
 
 
-
+const dateOptions = {year: 'numeric', month: 'long', day: 'numeric'}
 // Calculate the number of days since the purchase
 const daysSincePurchase = Math.floor((currentDate - purchaseDate) / (1000 * 60 * 60 * 24));
 
 // Update the HTML element with the number of days since the purchase
 document.getElementById('daysSincePurchase').textContent = daysSincePurchase;
+
+// Update todays date
+document.getElementById('todayDate').textContent = currentDate.toLocaleDateString('en-US', dateOptions)
 
 // Update the HTML element with the number of miles allowed in current month
 document.getElementById('monthMiles').textContent = allowedMilesInMonth;
@@ -299,7 +302,7 @@ document.getElementById('monthMiles').textContent = allowedMilesInMonth;
 // Update the HTML element with the number of miles allowed so far in current month
 document.getElementById('allowedSoFar').textContent = potentialCurrentMiles;
 
-document.getElementById('purchaseDate').textContent = purchaseDate.toLocaleDateString('en-US', {day: 'numeric',month: 'long',year: 'numeric'});
+document.getElementById('purchaseDate').textContent = purchaseDate.toLocaleDateString('en-US', dateOptions);
 
 // Calculate the total allowed miles since the date of purchase
 const totalAllowedSoFar = Math.floor(milesPerDay * daysSincePurchase);
