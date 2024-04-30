@@ -224,7 +224,6 @@ function updateCharts(newActualMilesUsed) {
 }
 
 function setValues() {
-    console.log('are we here on load?')
     // Get the actual miles input field value
     const actualMilesInput = document.getElementById('actualMilesInput').value;
             
@@ -241,23 +240,118 @@ function setValues() {
     document.getElementById('totalMilesDriven').textContent = newActualMilesUsed.toFixed(0); // No decimal places
 }
 
+function setReportedMilesLocalStorage(milesValue) {
+    // If reportedMiles does not exist, create and initialize it
+    const currentDate = new Date();
+    const startOfWeek = new Date(currentDate);
+    startOfWeek.setDate(currentDate.getDate() - currentDate.getDay()); // Set to Sunday of current week
+    startOfWeek.setHours(0, 0, 0, 0); // Set to beginning of day
 
-// Add event listener to the input field
+    // Set ttl to the end of the week
+    const endOfWeek = new Date(startOfWeek);
+    endOfWeek.setDate(endOfWeek.getDate() + 6); // Set to Saturday of current week
+    endOfWeek.setHours(23, 59, 59, 999); // Set to end of day
+
+    const reportedMilesObj = {
+        startOfWeekValue: milesValue,
+        currentValue: 0,
+        ttl: endOfWeek.toISOString()
+    };
+
+    // Save reportedMilesObj to localStorage
+    localStorage.setItem('reportedMiles', JSON.stringify(reportedMilesObj));
+
+    // update HTML element with currentValue
+    document.getElementById('reportedMiles').textContent = 'Not enough data to calculate';
+}
+
+window.onload = function() {
+    // Check if reportedMiles exists in localStorage
+    const reportedMiles = localStorage.getItem('reportedMiles');
+    const actualMilesUsed = localStorage.getItem('actualMilesUsed');
+    const milesValue = actualMilesUsed != null ? JSON.parse(actualMilesUsed) : 0;
+    if (!reportedMiles) {
+        setReportedMilesLocalStorage(milesValue);
+    } else {
+        // If reportedMiles exists, check if ttl has expired
+        const reportedMilesObj = JSON.parse(reportedMiles);
+        const ttl = new Date(reportedMilesObj.ttl);
+        const currentDate = new Date();
+        if (currentDate > ttl) {
+            // If ttl has passed, reset reportedMiles to initial values
+            const startOfWeek = new Date(currentDate);
+            startOfWeek.setDate(currentDate.getDate() - currentDate.getDay()); // Set to Sunday of current week
+            startOfWeek.setHours(0, 0, 0, 0); // Set to beginning of day
+
+            // Set ttl to the end of the week
+            const endOfWeek = new Date(startOfWeek);
+            endOfWeek.setDate(endOfWeek.getDate() + 6); // Set to Saturday of current week
+            endOfWeek.setHours(23, 59, 59, 999); // Set to end of day
+
+            reportedMilesObj.startOfWeekValue = milesValue;
+            reportedMilesObj.currentValue = 0;
+            reportedMilesObj.ttl = endOfWeek.toISOString();
+
+            // Save the updated reportedMilesObj back to localStorage
+            localStorage.setItem('reportedMiles', JSON.stringify(reportedMilesObj));
+
+            // update HTML element with currentValue
+            document.getElementById('reportedMiles').textContent = 0;
+        } else {
+            // If ttl has not expired, update HTML element with currentValue
+            document.getElementById('reportedMiles').textContent = reportedMilesObj.currentValue;
+        }
+    }
+};
+
+function setReportedMiles() {
+    // Get the actual miles input field value
+    const actualMilesInput = document.getElementById('actualMilesInput').value;
+            
+    // Parse the input value as an integer
+    const newActualMilesUsed = parseInt(actualMilesInput);
+
+    // Check if reportedMiles exists in localStorage
+    const reportedMiles = localStorage.getItem('reportedMiles');
+    if (!reportedMiles) {
+        const actualMilesUsed = localStorage.getItem('actualMilesUsed');
+        const milesValue = actualMilesUsed != null ? JSON.parse(actualMilesUsed) : 0;
+        setReportedMilesLocalStorage(milesValue);
+    } else {
+        // If reportedMiles exists, update the currentValue
+        const reportedMilesObj = JSON.parse(reportedMiles);
+
+        // Calculate the new currentValue
+        const newCurrentValue = newActualMilesUsed - (reportedMilesObj.startOfWeekValue + reportedMilesObj.currentValue) + reportedMilesObj.currentValue;
+
+        // Update the currentValue in reportedMilesObj
+        reportedMilesObj.currentValue = newCurrentValue;
+
+        // Save reportedMilesObj back to localStorage
+        localStorage.setItem('reportedMiles', JSON.stringify(reportedMilesObj));
+
+        // Update the HTML element with the new currentValue
+        document.getElementById('reportedMiles').textContent = newCurrentValue;
+    }
+}
+
+
+// Call setReportedMiles function when updating values
+function setValuesAndUpdateReportedMiles() {
+    setValues();
+    setReportedMiles();
+}
+
+// Add event listeners to update reported miles when values are set
 document.getElementById('actualMilesInput').addEventListener('keydown', function(event) {
-    // Check if the enter key (key code 13) is pressed
     if (event.keyCode === 13) {
-        // Prevent the default behavior of the enter key (form submission)
         event.preventDefault();
-
-        // Call the setValues function to update the charts and the total miles driven
-        setValues();
+        setValuesAndUpdateReportedMiles();
     }
 });
 
-// Add event listener to the submit button
 document.getElementById('submitBtn').addEventListener('click', function() {
-    // Call the setValues function to update the charts and the total miles driven
-    setValues();
+    setValuesAndUpdateReportedMiles();
 });
 
 function updateDifference(newActualMilesUsed) {
