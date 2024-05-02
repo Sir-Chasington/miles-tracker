@@ -40,8 +40,21 @@ const daysInMonthCycle = Math.ceil((endOfMonth.getTime() - startOfMonth.getTime(
 // Calculate allowed miles in the current month
 const allowedMilesInMonth = (milesPerDay * daysInMonthCycle).toFixed(0);
 
-// Calculate the number of days since the 15th of the month
-const daysSinceStartOfMonth = currentDate.getDate() - 14;
+// Calculate the number of days since the 15th of the month\
+const currentDay = currentDate.getDate();
+
+let daysSinceStartOfMonth;
+
+if (currentDay >= 15) {
+    // Case 1: Current date is on or after the 15th of the month
+    daysSinceStartOfMonth = currentDay - 14;
+} else {
+    // Case 2: Current date is before the 15th of the month
+    const daysInLastMonth = new Date(currentDate.getFullYear(), currentDate.getMonth(), 0).getDate();
+    const daysFromLastMonth = daysInLastMonth - 14;
+    const daysFromThisMonth = currentDay;
+    daysSinceStartOfMonth = daysFromLastMonth + daysFromThisMonth;
+}
 
 // Calculate potential current miles for the current month
 const potentialCurrentMiles = (milesPerDay * daysSinceStartOfMonth).toFixed(0);
