@@ -105,36 +105,77 @@ const mileageChart = new Chart(ctx1, {
 const initialActualMilesUsed = 0; // Initial value for actual miles used
 
 const ctx2 = document.getElementById('barChart').getContext('2d');
-const barChart = new Chart(ctx2, {
-    type: 'bar',
-    data: {
-        labels: ['Allowed Miles', 'Actual Miles Used'],
-        datasets: [{
-            label: 'Allowed Miles',
-            data: [allowedMiles[daysLapsed], 0], // Initially set actual miles used to 0
-            backgroundColor: 'rgba(30, 136, 229, 0.5)', // Cobalt Blue with opacity
-            borderColor: 'rgba(30, 136, 229, 1)', // Cobalt Blue
-            borderWidth: 1
+let barChart; // Declare the barChart variable globally so it can be accessed by other functions
+
+function initializeBarChart() {
+    const milesAllowedPerWeek = milesPerDay * 7;
+    let actualMilesDrivenThisWeek = 0; // Default to 0
+
+    // Attempt to retrieve the reported miles from localStorage
+    const reportedMiles = localStorage.getItem('reportedMiles');
+    if (reportedMiles) {
+        const reportedMilesObj = JSON.parse(reportedMiles);
+        actualMilesDrivenThisWeek = reportedMilesObj.currentValue;
+    }
+
+    barChart = new Chart(ctx2, {
+        type: 'bar',
+        data: {
+            labels: ['Allowed Miles', 'Actual Miles Driven'],
+            datasets: [{
+                label: 'Miles This Week',
+                data: [milesAllowedPerWeek, actualMilesDrivenThisWeek],
+                backgroundColor: [
+                    'rgba(30, 136, 229, 0.5)', // Cobalt Blue with opacity
+                    'rgba(255, 193, 7, 0.5)' // Amber with opacity
+                ],
+                borderColor: [
+                    'rgba(30, 136, 229, 1)', // Cobalt Blue
+                    'rgba(255, 193, 7, 1)' // Amber
+                ],
+                borderWidth: 1
+            }]
         },
-        {
-            label: 'Actual Miles Used',
-            data: [0, initialActualMilesUsed], // Set initial actual miles used
-            backgroundColor: 'rgba(255, 193, 7, 0.5)', // Amber with opacity
-            borderColor: 'rgba(255, 193, 7, 1)', // Amber
-            borderWidth: 1
-        }]
-    },
-    options: {
-        scales: {
-            y: {
-                beginAtZero: true,
-                ticks: {
-                    precision: 0 // Remove decimal points
+        options: {
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    ticks: {
+                        precision: 0 // Remove decimal points
+                    }
                 }
             }
         }
+    });
+}
+
+function updateBarChart() {
+    const milesAllowedPerWeek = milesPerDay * 7;
+    let actualMilesDrivenThisWeek = 0; // Default to 0
+
+    // Attempt to retrieve the reported miles from localStorage
+    const reportedMiles = localStorage.getItem('reportedMiles');
+    if (reportedMiles) {
+        const reportedMilesObj = JSON.parse(reportedMiles);
+        actualMilesDrivenThisWeek = reportedMilesObj.currentValue;
     }
+
+    // Update the data for the bar chart
+    barChart.data.datasets[0].data = [milesAllowedPerWeek, actualMilesDrivenThisWeek];
+    barChart.update();
+}
+
+// Initialize chart on window load
+window.onload = function() {
+    initializeBarChart();
+};
+
+// Update the chart when new miles are reported
+document.getElementById('submitBtn').addEventListener('click', function() {
+    setValuesAndUpdateReportedMiles(); // Assuming this function updates localStorage
+    updateBarChart(); // Call this function to reflect changes in the chart
 });
+
 
 const ctx3 = document.getElementById('pieChart').getContext('2d');
 const pieChart = new Chart(ctx3, {
