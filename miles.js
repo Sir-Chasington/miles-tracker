@@ -150,7 +150,6 @@ function initializeBarChart() {
 }
 
 function updateBarChart() {
-    console.log('are we here?')
     const milesAllowedPerWeek = milesPerDay * 7;
     let actualMilesDrivenThisWeek = 0; // Default to 0
 
@@ -383,13 +382,13 @@ function setReportedMiles() {
 
 // Call setReportedMiles function when updating values
 function setValuesAndUpdateReportedMiles() {
-    setValues();
     setReportedMiles();
+    setValues();
 }
 
 // Add event listeners to update reported miles when values are set
 document.getElementById('actualMilesInput').addEventListener('keydown', function(event) {
-    if (event.keyCode === 13) {
+    if (event.key === 'Enter') {
         event.preventDefault();
         setValuesAndUpdateReportedMiles();
     }
