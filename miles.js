@@ -150,6 +150,7 @@ function initializeBarChart() {
 }
 
 function updateBarChart() {
+    console.log('are we here?')
     const milesAllowedPerWeek = milesPerDay * 7;
     let actualMilesDrivenThisWeek = 0; // Default to 0
 
@@ -166,15 +167,7 @@ function updateBarChart() {
 }
 
 // Initialize chart on window load
-window.onload = function() {
-    initializeBarChart();
-};
-
-// Update the chart when new miles are reported
-document.getElementById('submitBtn').addEventListener('click', function() {
-    setValuesAndUpdateReportedMiles(); // Assuming this function updates localStorage
-    updateBarChart(); // Call this function to reflect changes in the chart
-});
+initializeBarChart();
 
 
 const ctx3 = document.getElementById('pieChart').getContext('2d');
@@ -256,9 +249,6 @@ if (storedActualMilesUsed !== null) {
 
 // Function to update the charts
 function updateCharts(newActualMilesUsed) {
-    // Update the actual miles used in the datasets
-    actualMiles[daysLapsed] = newActualMilesUsed;
-    barChart.data.datasets[1].data[1] = newActualMilesUsed;
     // Update the pie chart data
     pieChart.data.datasets[0].data = [allowedMilesInMonth, potentialCurrentMiles];
     doughnutChart.data.datasets[0].data[0] = totalMiles - newActualMilesUsed; // Update total miles left in doughnut chart
@@ -269,7 +259,8 @@ function updateCharts(newActualMilesUsed) {
 
     // Update all charts
     mileageChart.update();
-    barChart.update();
+    // barChart.update();
+    updateBarChart();
     pieChart.update();
     doughnutChart.update();
 
