@@ -150,3 +150,7 @@ canvas {
     color: #ddd;
     font-size: 16px;
 }
+
+.dashboard-data {
+    color: rgba(255, 193, 7, 1);
+}

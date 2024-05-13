@@ -384,6 +384,7 @@ function setReportedMiles() {
 function setValuesAndUpdateReportedMiles() {
     setReportedMiles();
     setValues();
+    document.getElementById('actualMilesInput').value = '';
 }
 
 // Add event listeners to update reported miles when values are set
