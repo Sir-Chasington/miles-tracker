@@ -346,6 +346,16 @@ window.onload = function() {
             document.getElementById('reportedMiles').textContent = reportedMilesObj.currentValue;
         }
     }
+
+    // average section
+    const averageSection = localStorage.getItem('currentSession');
+    if (averageSection) {
+        const parsed = JSON.parse(averageSection);
+        document.getElementById('recentMiles').innerHTML = `${parsed.miles} miles`;
+        document.getElementById('recentBattery').innerHTML = `${parsed.percent}% used`;
+        document.getElementById('recentAverageBattery').innerHTML = `${parsed.averagePerPercent} miles per single percent`;
+        document.getElementById('recentFullDistance').innerHTML = `${parsed.potentialTravel} total miles`;
+    }
 };
 
 function setReportedMiles() {
@@ -397,6 +407,65 @@ document.getElementById('actualMilesInput').addEventListener('keydown', function
 
 document.getElementById('submitBtn').addEventListener('click', function() {
     setValuesAndUpdateReportedMiles();
+});
+
+// reset miles section values
+function averageAreaReset() {
+    document.getElementById('milesTraveled').value = '';
+    document.getElementById('percentUsed').value = '';
+    document.getElementById('milesError').innerHTML = '';
+}
+
+// Function to calculate average miles traveled with battery consumption
+let milesTraveled;
+let percentUsed;
+function setAverageMilesAndBattery() {
+    if (!milesTraveled || !percentUsed) {
+        document.getElementById('milesError').innerHTML = 'Missing miles value or batter used value';
+    } else {
+        // write to local storage
+            // current miles and battery usage along with average off that session
+            // add to overal miles and battery usage and calculate the full miles used average
+            // set both values in UI
+        const recentAverageMilesPerPercent = milesTraveled/percentUsed;
+        const currentSession = {
+            miles: milesTraveled,
+            percent: percentUsed,
+            averagePerPercent: recentAverageMilesPerPercent,
+            potentialTravel: recentAverageMilesPerPercent * 100
+        }
+        localStorage.setItem('currentSession', JSON.stringify(currentSession));
+        document.getElementById('recentMiles').innerHTML = `${milesTraveled} miles`;
+        document.getElementById('recentBattery').innerHTML = `${percentUsed}% used`;
+        document.getElementById('recentAverageBattery').innerHTML = `${recentAverageMilesPerPercent} miles per single percent`;
+        document.getElementById('recentFullDistance').innerHTML = `${currentSession.potentialTravel} total miles`;
+
+        let overalSession = localStorage.getItem('overalSession'); 
+        if (!overalSession) {
+            console.log('no overal Session')
+        }
+        averageAreaReset();
+    }
+}
+
+// Event listener for calculating miles traveled and battery percent used
+document.getElementById('milesTraveled').addEventListener('keyup', function(event) {
+    event.preventDefault();
+    milesTraveled = event.target.value;
+
+    if (event.key === 'Enter') {
+        setAverageMilesAndBattery();
+    }
+});
+
+// Event listener for calculating percent of batter with miles traveled
+document.getElementById('percentUsed').addEventListener('keyup', function(event) {
+    event.preventDefault();
+    percentUsed = event.target.value;
+
+    if (event.key === 'Enter') {
+        setAverageMilesAndBattery();
+    }
 });
 
 function updateDifference(newActualMilesUsed) {

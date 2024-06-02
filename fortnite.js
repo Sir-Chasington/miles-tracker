@@ -1,10 +1,12 @@
+// May 24, 2024 START
+// August 16, 2024 END
 const levelsToReach = 100;
 const startDateYear = 2024;
-const startDateMonth = 2;
-const startDateDay = 8;
+const startDateMonth = 4;
+const startDateDay = 24;
 const endDateYear = 2024;
-const endDateMonth = 4;
-const endDateDay = 24;
+const endDateMonth = 7;
+const endDateDay = 16;
 
 const maxLevelToReach = levelsToReach * 2
 const startDate = new Date(startDateYear, startDateMonth, startDateDay).valueOf()
@@ -25,7 +27,7 @@ const daysLeft = Math.round(Math.abs((today - endOfSeason) / oneDay));
 const level100Message = `You need to be at level ${levelNeeded.toFixed(1)} to get to 100 before season end`;
 const level200Message = `You need to be at level ${levelNeeded200.toFixed(1)} to get to 200 before season end`;
 
-const startFormatted = `${startDateMonth}/${startDateDay}/${startDateYear}`;
+const startFormatted = `${startDateMonth+1}/${startDateDay}/${startDateYear}`;
 const endFormatted = `${endDateMonth+1}/${endDateDay}/${endDateYear}`;
 
 // Update dashboard

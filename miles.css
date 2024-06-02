@@ -160,3 +160,53 @@ canvas {
 .dashboard-data {
     color: rgba(255, 193, 7, 1);
 }
+
+.average-miles {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    max-width: 1500px;
+    margin: 20px auto;
+    padding: 20px;
+    background-color: #333;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+}
+
+.average-item {
+    flex: 0 0 calc(50% - 20px); /* 33.33% width with spacing between */
+    margin: 0 10px 20px;
+}
+
+@media (max-width: 768px) {
+    .average-item {
+        flex: 0 0 calc(50% - 20px); /* 50% width with spacing between */
+    }
+}
+
+.average-item-content {
+    margin: 10px;
+    padding: 10px;
+    background-color: rgba(30, 136, 229, 0.5);
+    border-radius: 5px;
+    border: 1px solid #666;
+    text-align: center;
+    color: #ddd;
+    font-size: 16px;
+}
+
+.average-item-content .info {
+    color: rgba(255, 193, 7, 1);
+}
+
+.average-item-content #milesError {
+    color: #FF5F5F;
+}
+
+.recent {
+    padding: 4px;
+}
+
+.recent span {
+    color: rgba(255, 193, 7, 1);
+}
