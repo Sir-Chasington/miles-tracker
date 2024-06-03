@@ -56,6 +56,11 @@ if (currentDay >= 15) {
     daysSinceStartOfMonth = daysFromLastMonth + daysFromThisMonth;
 }
 
+// Set Text Content for a html element
+function setTextContent(id, content) {
+    document.getElementById(id).textContent = content;
+}
+
 // Calculate potential current miles for the current month
 const potentialCurrentMiles = (milesPerDay * daysSinceStartOfMonth).toFixed(0);
 
@@ -240,7 +245,7 @@ if (storedActualMilesUsed !== null) {
     // Update the charts with the stored value
     updateCharts(actualMilesUsed);
     // Update the total miles driven with the stored value
-    document.getElementById('totalMilesDriven').textContent = actualMilesUsed.toFixed(0);
+    setTextContent('totalMilesDriven', actualMilesUsed.toFixed(0));
 } else {
     // If there is no value in local storage, initialize it with 0
     localStorage.setItem('actualMilesUsed', 0);
@@ -281,7 +286,7 @@ function setValues() {
     updateCharts(newActualMilesUsed);
 
     // Update the total miles driven with the new value
-    document.getElementById('totalMilesDriven').textContent = newActualMilesUsed.toFixed(0); // No decimal places
+    setTextContent('totalMilesDriven', newActualMilesUsed.toFixed(0))
 }
 
 function setReportedMilesLocalStorage(milesValue) {
@@ -306,7 +311,7 @@ function setReportedMilesLocalStorage(milesValue) {
     localStorage.setItem('reportedMiles', JSON.stringify(reportedMilesObj));
 
     // update HTML element with currentValue
-    document.getElementById('reportedMiles').textContent = 'Not enough data to calculate';
+    setTextContent('reportedMiles', 'Not enough data to calculate');
 }
 
 window.onload = function() {
@@ -340,10 +345,10 @@ window.onload = function() {
             localStorage.setItem('reportedMiles', JSON.stringify(reportedMilesObj));
 
             // update HTML element with currentValue
-            document.getElementById('reportedMiles').textContent = 0;
+            setTextContent('reportedMiles', 0);
         } else {
             // If ttl has not expired, update HTML element with currentValue
-            document.getElementById('reportedMiles').textContent = reportedMilesObj.currentValue;
+            setTextContent('reportedMiles', reportedMilesObj.currentValue);
         }
     }
 
@@ -351,10 +356,19 @@ window.onload = function() {
     const averageSection = localStorage.getItem('currentSession');
     if (averageSection) {
         const parsed = JSON.parse(averageSection);
-        document.getElementById('recentMiles').innerHTML = `${parsed.miles} miles`;
-        document.getElementById('recentBattery').innerHTML = `${parsed.percent}% used`;
-        document.getElementById('recentAverageBattery').innerHTML = `${parsed.averagePerPercent} miles per single percent`;
-        document.getElementById('recentFullDistance').innerHTML = `${parsed.potentialTravel} total miles`;
+        setTextContent('recentMiles', `${parsed.miles} miles`);
+        setTextContent('recentBattery', `${parsed.percent}% used`);
+        setTextContent('recentAverageBattery', `${parsed.averagePerPercent} miles per single percent`);
+        setTextContent('recentFullDistance', `${parsed.potentialTravel} total miles`);
+    }
+
+    const allConsumptionSection = localStorage.getItem('overalSession');
+    if (allConsumptionSection) {
+        const parsed = JSON.parse(allConsumptionSection);
+        setTextContent('allMiles', `${parsed.miles} miles`);
+        setTextContent('allBattery', `${parsed.percent}% used`);
+        setTextContent('allAverageBattery', `${parsed.averagePerPercent} miles per single percent`);
+        setTextContent('allFullDistance', `${parsed.potentialTravel} miles`);
     }
 };
 
@@ -385,7 +399,7 @@ function setReportedMiles() {
         localStorage.setItem('reportedMiles', JSON.stringify(reportedMilesObj));
 
         // Update the HTML element with the new currentValue
-        document.getElementById('reportedMiles').textContent = newCurrentValue;
+        setTextContent('reportedMiles', newCurrentValue)
     }
 }
 
@@ -413,7 +427,7 @@ document.getElementById('submitBtn').addEventListener('click', function() {
 function averageAreaReset() {
     document.getElementById('milesTraveled').value = '';
     document.getElementById('percentUsed').value = '';
-    document.getElementById('milesError').innerHTML = '';
+    setTextContent('milesError', '');
 }
 
 // Function to calculate average miles traveled with battery consumption
@@ -421,12 +435,8 @@ let milesTraveled;
 let percentUsed;
 function setAverageMilesAndBattery() {
     if (!milesTraveled || !percentUsed) {
-        document.getElementById('milesError').innerHTML = 'Missing miles value or batter used value';
+        setTextContent('milesError', 'Missing miles value or batter used value');
     } else {
-        // write to local storage
-            // current miles and battery usage along with average off that session
-            // add to overal miles and battery usage and calculate the full miles used average
-            // set both values in UI
         const recentAverageMilesPerPercent = milesTraveled/percentUsed;
         const currentSession = {
             miles: milesTraveled,
@@ -435,14 +445,37 @@ function setAverageMilesAndBattery() {
             potentialTravel: recentAverageMilesPerPercent * 100
         }
         localStorage.setItem('currentSession', JSON.stringify(currentSession));
-        document.getElementById('recentMiles').innerHTML = `${milesTraveled} miles`;
-        document.getElementById('recentBattery').innerHTML = `${percentUsed}% used`;
-        document.getElementById('recentAverageBattery').innerHTML = `${recentAverageMilesPerPercent} miles per single percent`;
-        document.getElementById('recentFullDistance').innerHTML = `${currentSession.potentialTravel} total miles`;
+        setTextContent('recentMiles', `${milesTraveled} miles`);
+        setTextContent('recentBattery', `${percentUsed}% used`);
+        setTextContent('recentAverageBattery', `${recentAverageMilesPerPercent} miles per single percent`);
+        setTextContent('recentFullDistance', `${currentSession.potentialTravel} miles`);
 
-        let overalSession = localStorage.getItem('overalSession'); 
+        // do we want to keep a historical snapshot of all reported miles?
+
+        const overalSession = localStorage.getItem('overalSession'); 
         if (!overalSession) {
-            console.log('no overal Session')
+            localStorage.setItem('overalSession', JSON.stringify(currentSession));
+            setTextContent('allMiles', `${milesTraveled} miles`);
+            setTextContent('allBattery', `${percentUsed}% used`);
+            setTextContent('allAverageBattery', `${recentAverageMilesPerPercent} miles per single percent`);
+            setTextContent('allFullDistance', `${currentSession.potentialTravel} miles`);
+        } else {
+            const overallObj = JSON.parse(overalSession);
+            const totalMilesTraveled = overallObj.miles + milesTraveled;
+            const totalBatteryPercentUsed = overallObj.percent + percentUsed;
+            const totalAverageMilesPerBatteryPercent = totalMilesTraveled/totalBatteryPercentUsed;
+            const newObj = {
+                miles: totalMilesTraveled,
+                percent: totalBatteryPercentUsed,
+                averagePerPercent: totalAverageMilesPerBatteryPercent,
+                potentialTravel: totalAverageMilesPerBatteryPercent * 100
+            }
+
+            localStorage.setItem('overalSession', JSON.stringify(newObj));
+            setTextContent('allMiles', `${newObj.miles} miles`);
+            setTextContent('allBattery', `${newObj.percent}% used`);
+            setTextContent('allAverageBattery', `${newObj.averagePerPercent} miles per single percent`);
+            setTextContent('allFullDistance', `${newObj.potentialTravel} miles`);
         }
         averageAreaReset();
     }
@@ -451,7 +484,7 @@ function setAverageMilesAndBattery() {
 // Event listener for calculating miles traveled and battery percent used
 document.getElementById('milesTraveled').addEventListener('keyup', function(event) {
     event.preventDefault();
-    milesTraveled = event.target.value;
+    milesTraveled = Number(event.target.value);
 
     if (event.key === 'Enter') {
         setAverageMilesAndBattery();
@@ -461,7 +494,7 @@ document.getElementById('milesTraveled').addEventListener('keyup', function(even
 // Event listener for calculating percent of batter with miles traveled
 document.getElementById('percentUsed').addEventListener('keyup', function(event) {
     event.preventDefault();
-    percentUsed = event.target.value;
+    percentUsed = Number(event.target.value);
 
     if (event.key === 'Enter') {
         setAverageMilesAndBattery();
@@ -499,24 +532,24 @@ const dateOptions = {year: 'numeric', month: 'long', day: 'numeric'}
 const daysSincePurchase = Math.floor((currentDate - purchaseDate) / (1000 * 60 * 60 * 24));
 
 // Update the HTML element with the number of days since the purchase
-document.getElementById('daysSincePurchase').textContent = daysSincePurchase;
+setTextContent('daysSincePurchase', daysSincePurchase);
 
 // Update todays date
-document.getElementById('todayDate').textContent = currentDate.toLocaleDateString('en-US', dateOptions)
+setTextContent('todayDate', currentDate.toLocaleDateString('en-US', dateOptions));
 
 // Update the HTML element with the number of miles allowed in current month
-document.getElementById('monthMiles').textContent = allowedMilesInMonth;
+setTextContent('monthMiles', allowedMilesInMonth)
 
 // Update the HTML element with the number of miles allowed so far in current month
-document.getElementById('allowedSoFar').textContent = potentialCurrentMiles;
+setTextContent('allowedSoFar', potentialCurrentMiles);
 
-document.getElementById('purchaseDate').textContent = purchaseDate.toLocaleDateString('en-US', dateOptions);
+setTextContent('purchaseDate', purchaseDate.toLocaleDateString('en-US', dateOptions));
 
 // Calculate the total allowed miles since the date of purchase
 const totalAllowedSoFar = Math.floor(milesPerDay * daysSincePurchase);
 
 // Update the HTML element with the total allowed miles since purchase
-document.getElementById('totalAllowedSoFar').textContent = totalAllowedSoFar.toFixed(0);
+setTextContent('totalAllowedSoFar', totalAllowedSoFar.toFixed(0));
 
 // Update teh HTML element with the miles allowed per day
-document.getElementById('allowedPerDay').textContent = milesPerDay;
+setTextContent('allowedPerDay', milesPerDay);
