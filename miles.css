@@ -180,7 +180,7 @@ canvas {
 
 @media (max-width: 768px) {
     .average-item {
-        flex: 0 0 calc(50% - 20px); /* 50% width with spacing between */
+        flex: 0 0 calc(100%); /* 50% width with spacing between */
     }
 }
 
@@ -193,10 +193,12 @@ canvas {
     text-align: center;
     color: #ddd;
     font-size: 16px;
+    position: relative;
 }
 
 .average-item-content .info {
     color: rgba(255, 193, 7, 1);
+    margin: 10px 0;
 }
 
 .average-item-content #milesError {
@@ -209,4 +211,56 @@ canvas {
 
 .recent span {
     color: rgba(255, 193, 7, 1);
+}
+
+.tooltip {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+}
+
+.tooltip-icon {
+    border: 1px solid rgba(255, 193, 7, 1);
+    color: white;
+    text-align: center;
+    border-radius: 50%;
+    font-size: 12px;
+    cursor: pointer;
+    width: 13px;
+    height: 13px;
+    display: block;
+}
+
+.tooltip-text {
+    visibility: hidden;
+    width: 200px;
+    background-color: #555;
+    color: #fff;
+    text-align: center;
+    border-radius: 6px;
+    padding: 5px;
+    position: absolute;
+    z-index: 1;
+    bottom: 125%; /* Adjust this to control the tooltip position */
+    left: 50%;
+    margin-left: -100px;
+    opacity: 0;
+    transition: opacity 0.3s;
+    font-size: 12px;
+}
+
+.tooltip-text::after {
+    content: "";
+    position: absolute;
+    top: 100%;
+    left: 50%;
+    margin-left: -5px;
+    border-width: 5px;
+    border-style: solid;
+    border-color: #555 transparent transparent transparent;
+}
+
+.tooltip:hover .tooltip-text {
+    visibility: visible;
+    opacity: 1;
 }
