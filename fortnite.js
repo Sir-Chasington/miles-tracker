@@ -2,11 +2,11 @@
 // August 16, 2024 END
 const levelsToReach = 100;
 const startDateYear = 2024;
-const startDateMonth = 4;
-const startDateDay = 24;
+const startDateMonth = 7;
+const startDateDay = 16;
 const endDateYear = 2024;
-const endDateMonth = 7;
-const endDateDay = 16;
+const endDateMonth = 10;
+const endDateDay = 2;
 
 const maxLevelToReach = levelsToReach * 2
 const startDate = new Date(startDateYear, startDateMonth, startDateDay).valueOf()
