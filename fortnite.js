@@ -24,8 +24,8 @@ const levelNeeded = daysLapsed * levelsADay;
 const levelNeeded200 = daysLapsed * levelsADay200;
 
 const daysLeft = Math.round(Math.abs((today - endOfSeason) / oneDay));
-const level100Message = `You need to be at level ${levelNeeded.toFixed(1)} to get to 100 before season end`;
-const level200Message = `You need to be at level ${levelNeeded200.toFixed(1)} to get to 200 before season end`;
+const level100Message = `You need to be at level ${levelNeeded.toFixed(1)} to get to ${levelsToReach} before season end`;
+const level200Message = `You need to be at level ${levelNeeded200.toFixed(1)} to get to ${levelsToReach*2} before season end`;
 
 const startFormatted = `${startDateMonth+1}/${startDateDay}/${startDateYear}`;
 const endFormatted = `${endDateMonth+1}/${endDateDay}/${endDateYear}`;
@@ -33,8 +33,8 @@ const endFormatted = `${endDateMonth+1}/${endDateDay}/${endDateYear}`;
 // Update dashboard
 document.getElementById('levelsTo100').innerHTML = level100Message;
 document.getElementById('levelsTo200').innerHTML = level200Message;
-document.getElementById('levelsADay').innerHTML = `${levelsADay.toFixed(2)} levels a day to get to 100`;
-document.getElementById('levelsADay200').innerHTML = `${levelsADay200.toFixed(2)} levels a day to get to 200`;
+document.getElementById('levelsADay').innerHTML = `${levelsADay.toFixed(2)} levels a day to get to ${levelsToReach}`;
+document.getElementById('levelsADay200').innerHTML = `${levelsADay200.toFixed(2)} levels a day to get to ${levelsToReach*2}`;
 document.getElementById('seasonStart').innerHTML = `Season Start: ${startFormatted}`;
 document.getElementById('seasonEnd').innerHTML = `Season End: ${endFormatted}`;
 
@@ -57,14 +57,14 @@ const levelsChart = new Chart(levelsCtx, {
         labels: allDays, // Use allDays array as labels
         datasets: [
             {
-                label: 'Levels to 100',
+                label: `Levels to ${levelsToReach}`,
                 data: levelsData100,
                 borderColor: '#f44336', // Red
                 backgroundColor: 'rgba(244, 67, 54, 0.2)', // Red with opacity
                 tension: 0.1
             },
             {
-                label: 'Levels to 200',
+                label: `Levels to ${levelsToReach*2}`,
                 data: levelsData200,
                 borderColor: '#2196f3', // Blue
                 backgroundColor: 'rgba(33, 150, 243, 0.2)', // Blue with opacity
